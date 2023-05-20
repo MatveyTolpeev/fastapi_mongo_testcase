@@ -8,7 +8,7 @@ import requests
 from pymongo import MongoClient
 from starlette.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from test_models import Sex, Category, Product, Brand, Leftover
+from models import Sex, Category, Product, Brand, Leftover
 from envparse import Env
 import json
 from slugify import slugify
@@ -145,7 +145,6 @@ def save_to_db():
         count += 1
 
 
-@app.post("/filtered_data")
 def get_filtered_data(filter: dict = Body(...)) -> List[dict]:
 
     db = get_database()
@@ -162,6 +161,7 @@ routes = [
     APIRoute(path="/ping", endpoint=test_work, methods=['GET']),
     APIRoute(path="/api/v1/data", endpoint=send_data, methods=['GET']),
     APIRoute(path="/save_to_db", endpoint=save_to_db, methods=['GET']),
+    APIRoute(path="/filtered_data", endpoint=get_filtered_data, methods=['POST'])
 ]
 
 
