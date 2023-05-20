@@ -1,7 +1,9 @@
+from typing import List
+
 import motor.motor_asyncio
 from fastapi.routing import APIRoute, APIRouter
 import uvicorn as uvicorn
-from fastapi import Request, FastAPI, UploadFile, File
+from fastapi import Request, FastAPI, UploadFile, File, Body
 import requests
 from pymongo import MongoClient
 from starlette.responses import JSONResponse
@@ -15,7 +17,7 @@ env = Env()
 MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/")
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 db = client["products"]
-
+app = FastAPI()
 
 def get_database():
     # Provide the mongodb atlas url to connect python to mongodb using pymongo
@@ -143,20 +145,27 @@ def save_to_db():
         count += 1
 
 
-def get_filtered_data():
-    pass
+@app.post("/filtered_data")
+def get_filtered_data(filter: dict = Body(...)) -> List[dict]:
+
+    db = get_database()
+    collection = db["products"]
+
+    products = []
+    for product in collection.find(filter, {"_id": 0}):
+        products.append(product)
+    print(len(products))
+    return products
 
 
 routes = [
     APIRoute(path="/ping", endpoint=test_work, methods=['GET']),
     APIRoute(path="/api/v1/data", endpoint=send_data, methods=['GET']),
     APIRoute(path="/save_to_db", endpoint=save_to_db, methods=['GET']),
-    APIRoute(path="filtered_data", endpoint=get_filtered_data, methods=['POST'])
 ]
 
-app = FastAPI()
+
 app.include_router(APIRouter(routes=routes))
 
 if __name__ == "__main__":
-
     uvicorn.run(app, host="localhost", port=8000)
