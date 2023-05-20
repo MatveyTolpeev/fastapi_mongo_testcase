@@ -1,29 +1,40 @@
 import enum
+from pydantic import BaseModel
+from typing import Union, List, Optional
 
 
-class Category:
+class Category(BaseModel):
     name: str
     slug: str
 
 
-class Brand:
+class Brand(BaseModel):
     name: str
     slug: str
 
 
 class Sex(enum.Enum):
-    man = 1
-    women = 2
-    unisex = 3
+    man = 'М'
+    women = 'Ж'
+    unisex = 'У'
 
 
-class Clothes:
+class Leftover(BaseModel):
+    size: Optional[str]
+    count: Optional[int]
+    price: Optional[int]
+
+
+class Product(BaseModel):
     title: str
-    SKU: str
+    sku: str
     color: str
+    color_code: str
     brand: Brand
-    sex: Sex
-    material: str
+    sex: Optional[str]
+    material: Optional[str]
     root_category: Category
-    price: float
-    
+    price: Optional[float]
+    discount_price: Optional[float]
+    in_the_sale: bool
+    leftovers: Optional[List[Leftover]]
