@@ -1,0 +1,132 @@
+[
+	{
+		"title": "-",
+		"sku": "---//--",
+		"color": "-",
+		"brand": "",
+		"sex": null,
+		"material": null,
+		"size_table_type": null,
+		"root_category": "Косметика",
+		"fashion_season": null,
+		"fashion_collection": null,
+		"fashion_collection_inner": null,
+		"manufacture_country": "",
+		"category": "-",
+		"price": 0,
+		"discount_price": 0,
+		"in_the_sale": false,
+		"leftovers": [
+			{
+				"size": "-",
+				"count": 0,
+				"price": null
+			}
+		]
+	},
+	{
+		"title": "--",
+		"sku": "------///-------",
+		"color": "2024-04",
+		"brand": "",
+		"sex": null,
+		"material": null,
+		"size_table_type": null,
+		"root_category": "Косметика",
+		"fashion_season": null,
+		"fashion_collection": null,
+		"fashion_collection_inner": null,
+		"manufacture_country": "",
+		"category": "--",
+		"price": 0,
+		"discount_price": 0,
+		"in_the_sale": false,
+		"leftovers": [
+			{
+				"size": "250",
+				"count": 0,
+				"price": null
+			}
+		]
+	},
+	{
+		"title": "--",
+		"sku": "-------------/////-------",
+		"color": "2024-04",
+		"brand": "",
+		"sex": null,
+		"material": null,
+		"size_table_type": null,
+		"root_category": "Косметика",
+		"fashion_season": null,
+		"fashion_collection": null,
+		"fashion_collection_inner": null,
+		"manufacture_country": "",
+		"category": "--",
+		"price": 0,
+		"discount_price": 0,
+		"in_the_sale": false,
+		"leftovers": [
+			{
+				"size": "250",
+				"count": 0,
+				"price": null
+			}
+		]
+	},
+	{
+		"title": "\"Прекурсор\" эмульсия д/лица антивозрастная",
+		"sku": "176LINDA",
+		"color": "2024-11",
+		"brand": "Linda Kristel",
+		"sex": "Ж",
+		"material": " ..",
+		"size_table_type": "Парфюмерия",
+		"root_category": "Косметика",
+		"fashion_season": "1900-P",
+		"fashion_collection": "Linda Kristel",
+		"fashion_collection_inner": "Linda Kristel",
+		"manufacture_country": "ИТАЛИЯ",
+		"category": "\"Прекурсор\" эмульсия д/лица антивозрастная",
+		"price": 7410,
+		"discount_price": 7410,
+		"in_the_sale": false,
+		"leftovers": [
+			{
+				"size": "30",
+				"count": 3,
+				"price": 7410
+			}
+		]
+	},
+	{
+		"title": "Носки",
+		"sku": "46125",
+		"color": "3009/чёрный",
+		"brand": "Falke",
+		"sex": "Ж",
+		"material": "Лиоцелл 70%; полиамид 28%; эластан 2%;",
+		"size_table_type": "Носки Универсальные",
+		"root_category": "Одежда без маркировки",
+		"fashion_season": "1900-R",
+		"fashion_collection": "Falke Donna",
+		"fashion_collection_inner": "Falke Donna",
+		"manufacture_country": "СЕРБИЯ",
+		"category": "Носки",
+		"price": 1950,
+		"discount_price": 1950,
+		"in_the_sale": false,
+		"leftovers": [
+			{
+				"size": "35-38",
+				"count": 0,
+				"price": 1950
+			},
+			{
+				"size": "39-42",
+				"count": 1,
+				"price": 1950
+			}
+		]
+	}
+]
