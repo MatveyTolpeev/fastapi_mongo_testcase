@@ -6,6 +6,7 @@ This service use Fastapi to accept request from url with json and save it to mon
 3) use docker-compose up --build -d
 
 # How to start without docker:
+firstly you need to intsall and start mongodb by yourself so i recommend to use docker, but use how you like it
 1) git clone https://github.com/MatveyTolpeev/fastapi_mongo_testcase.git
 2) change work direcotory to /fastapi_mongo_testcase
 3) run main.py 
