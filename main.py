@@ -72,10 +72,6 @@ test_leftovers2 = [
 ]
 
 
-def get_from_db():
-    pass
-
-
 def accept_data():
     products_list = requests.get("http://localhost:8000/api/v1/data").json()
     search_arr = ["Обувь", "Одежда", "Сумки"]
