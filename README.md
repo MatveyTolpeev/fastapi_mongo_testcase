@@ -16,3 +16,5 @@ firstly you need to intsall and start mongodb by yourself so i recommend to use 
 2) http://localhost:8000/api/v1/data - get all data from data.json in browser methods=['GET]
 3) http://localhost:8000/save_to_db - save all data from data.json in mongodb, take about 1-2 mins of time, methods=['GET]
 4) http://localhost:8000/filtered_data - get data with filters, example of filter -> {"title":"юбка"}, methods=['POST'], not work in browser cause POST request type, try postman
+
+# To make tests start file test.py
