@@ -164,4 +164,7 @@ routes = [
 app.include_router(APIRouter(routes=routes))
 
 if __name__ == "__main__":
+    print("testprint_in_docker")
+    print(MONGODB_URL)
+    print(get_database().name)
     uvicorn.run(app, host="localhost", port=8000)
