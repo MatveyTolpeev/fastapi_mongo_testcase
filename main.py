@@ -77,12 +77,17 @@ test_leftovers2 = [
 def accept_data():
     products_list = requests.get("http://localhost:8000/api/v1/data").json()
     search_arr = ["Обувь", "Одежда", "Сумки"]
+    search_arr_ends = ['-1', '-2', '-3', '-5', '-6', '-7', '-8', '-9', '-r', '-p', '-r-r']
     products = [
         Product(
             title=products_dict["title"],
-            sku="" if str(products_dict["sku"]).find("--") != -1
-            else str(products_dict["sku"]).split('-')[0]
-            if any([x in products_dict["root_category"] for x in search_arr]) else str(products_dict["sku"]),
+            sku="" if str(products_dict["sku"]).find("---") != -1
+            else str(products_dict["sku"])[:-2]
+            if any([x in products_dict["root_category"] for x in search_arr])
+                and any(str(products_dict["sku"]).endswith(end) for end in search_arr_ends)
+            else str(products_dict["sku"])[:-4] if str(products_dict["sku"]).endswith('-r-r')
+                and any([x in products_dict["root_category"] for x in search_arr])
+            else str(products_dict["sku"]),
             color=str(products_dict["color"]).split("/")[1] if len(str(products_dict["color"]).split("/")) > 1 and
                                                                "Косметика" not in str(
                 products_dict["root_category"]) else "",
@@ -96,7 +101,8 @@ def accept_data():
             root_category=Category(
                 name=products_dict["root_category"],
                 slug=slugify(products_dict["root_category"])),
-            price=products_dict["discount_price"] if products_dict["discount_price"] > 0
+            price=products_dict["discount_price"] if products_dict["discount_price"] > 0 and
+            products_dict['discount_price'] < products_dict['price']
             else products_dict["price"],
             discount_price=0 if products_dict["discount_price"] >= products_dict["price"]
             else products_dict["discount_price"],
@@ -104,6 +110,7 @@ def accept_data():
             leftovers=products_dict["leftovers"])
         for products_dict in products_list
     ]
+    print(len(products))
     return products
 
 
@@ -124,15 +131,16 @@ def test_work(request: Request):
 def save_to_db():
     db = get_database()
     collection = db["products"]
+    products_for_insert = []
     count = 0
     try:
         for el in accept_data():
             if count % 1000 == 0:
                 print(count)
-            if collection.find_one({"sku": el.sku}) is None:
+            if collection.find_one({"sku": el.sku, "color": el.color, "color_code": el.color_code}) is None:
                 collection.insert_one(el.dict())
                 continue
-            cur = collection.find_one({"sku": el.sku})
+            cur = collection.find_one({"sku": el.sku, "color": el.color, "color_code": el.color_code})
             for el_leftover in el.leftovers:
                 if any(temp_cur_leftover["size"] == el_leftover.size for temp_cur_leftover in cur["leftovers"]):
                     for cur_leftover in cur["leftovers"]:
@@ -141,7 +149,7 @@ def save_to_db():
                             cur_leftover["count"] += el_leftover.count
                 else:
                     cur["leftovers"] = cur["leftovers"] + [el_leftover.dict()]
-            collection.replace_one({"sku": cur["sku"]}, cur)
+            collection.replace_one({"sku": el.sku, "color": el.color, "color_code": el.color_code}, cur)
             count += 1
     except Exception as e:
         try:
