@@ -3,6 +3,12 @@ from pydantic import BaseModel
 from typing import Union, List, Optional
 
 
+class Sex(enum.Enum):
+    man = 'М'
+    women = 'Ж'
+    unisex = 'У'
+
+
 class Category(BaseModel):
     name: str
     slug: str
@@ -11,12 +17,6 @@ class Category(BaseModel):
 class Brand(BaseModel):
     name: str
     slug: str
-
-
-class Sex(enum.Enum):
-    man = 'М'
-    women = 'Ж'
-    unisex = 'У'
 
 
 class Leftover(BaseModel):

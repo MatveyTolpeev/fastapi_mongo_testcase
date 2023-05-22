@@ -1,3 +1,4 @@
+import traceback
 from typing import List
 
 import motor.motor_asyncio
@@ -18,6 +19,7 @@ MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/")
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 db = client["products"]
 app = FastAPI()
+
 
 def get_database():
     # Provide the mongodb atlas url to connect python to mongodb using pymongo
@@ -82,9 +84,11 @@ def accept_data():
             else str(products_dict["sku"]).split('-')[0]
             if any([x in products_dict["root_category"] for x in search_arr]) else str(products_dict["sku"]),
             color=str(products_dict["color"]).split("/")[1] if len(str(products_dict["color"]).split("/")) > 1 and
-                        "Косметика" not in str(products_dict["root_category"]) else "",
+                                                               "Косметика" not in str(
+                products_dict["root_category"]) else "",
             color_code=str(products_dict["color"]).split("/")[0] if len(str(products_dict["color"]).split("/")) > 0 and
-                         "Косметика" not in str(products_dict["root_category"]) else "",
+                                                                    "Косметика" not in str(
+                products_dict["root_category"]) else "",
             brand=Brand(name=products_dict["brand"],
                         slug=slugify(products_dict["brand"])),
             sex=products_dict["sex"],
@@ -118,38 +122,60 @@ def test_work(request: Request):
 
 
 def save_to_db():
-    drop_collection("products")
     db = get_database()
     collection = db["products"]
     count = 0
-    for el in accept_data():
-        if count % 1000 == 0:
-            print(count)
-        if collection.find_one({"sku": el.sku}) is None:
-            collection.insert_one(el.dict())
-            continue
-        cur = collection.find_one({"sku": el.sku})
-        for el_leftover in el.leftovers:
-            if any(temp_cur_leftover["size"] == el_leftover.size for temp_cur_leftover in cur["leftovers"]):
-                for cur_leftover in cur["leftovers"]:
-                    if cur_leftover["size"] == el_leftover.size:
-                        pass
-                        cur_leftover["count"] += el_leftover.count
-            else:
-                cur["leftovers"] = cur["leftovers"] + [el_leftover.dict()]
-        collection.replace_one({"sku": cur["sku"]}, cur)
-        count += 1
+    try:
+        for el in accept_data():
+            if count % 1000 == 0:
+                print(count)
+            if collection.find_one({"sku": el.sku}) is None:
+                collection.insert_one(el.dict())
+                continue
+            cur = collection.find_one({"sku": el.sku})
+            for el_leftover in el.leftovers:
+                if any(temp_cur_leftover["size"] == el_leftover.size for temp_cur_leftover in cur["leftovers"]):
+                    for cur_leftover in cur["leftovers"]:
+                        if cur_leftover["size"] == el_leftover.size:
+                            pass
+                            cur_leftover["count"] += el_leftover.count
+                else:
+                    cur["leftovers"] = cur["leftovers"] + [el_leftover.dict()]
+            collection.replace_one({"sku": cur["sku"]}, cur)
+            count += 1
+    except Exception as e:
+        try:
+            drop_collection("products")
+        except Exception as e2:
+            print(f"Unsuccess operation, no connection to db: {e}, {traceback.format_exc()}")
+            return {"status": "connect_db_error"}
+        print(f"Unsuccess operation, problem with save data: {e}, {traceback.format_exc()}")
+        return {"status": "save_to_db_error"}
 
 
 def get_filtered_data(filter: dict = Body(...)) -> List[dict]:
-
     db = get_database()
+
+    # Not workling
+    # products = db.products.find({"leftovers.count": { "$gt": 0}})
+
+    #And it not working too
+    # products = db.products.find({
+    #     "leftovers": {
+    #         "$elemMatch": {
+    #             "count": {"$gt": 0}
+    #         }
+    #     }
+    # })
+
     collection = db["products"]
 
     products = []
-    for product in collection.find(filter, {"_id": 0}):
-        products.append(product)
-    print(len(products))
+    for product in collection.find(filter, {"_id": 0},):
+        for leftover in product["leftovers"]:
+            if leftover["count"] > 0:
+                products.append(product)
+                break
     return products
 
 
@@ -160,11 +186,9 @@ routes = [
     APIRoute(path="/filtered_data", endpoint=get_filtered_data, methods=['POST'])
 ]
 
-
 app.include_router(APIRouter(routes=routes))
 
 if __name__ == "__main__":
-    print("testprint_in_docker")
     print(MONGODB_URL)
     print(get_database().name)
     uvicorn.run(app, host="localhost", port=8000)
