@@ -10,12 +10,12 @@ class Sex(enum.Enum):
 
 
 class Category(BaseModel):
-    name: str
+    title: str
     slug: str
 
 
 class Brand(BaseModel):
-    name: str
+    title: str
     slug: str
 
 
@@ -30,10 +30,10 @@ class Product(BaseModel):
     sku: str
     color: str
     color_code: str
-    brand: Brand
+    brand: str
     sex: Optional[str]
     material: Optional[str]
-    root_category: Category
+    root_category: str
     price: Optional[float]
     discount_price: Optional[float]
     in_the_sale: bool
