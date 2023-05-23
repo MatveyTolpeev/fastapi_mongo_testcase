@@ -1,3 +1,4 @@
+# FILE data.json not in this repo!! you need to add it in fastapi_mongo_testcase/ directory after cloning repo.
 # fastapi_mongo_testcase
 This service use Fastapi to accept request from url with json and save it to mongodb with conditions.
 # How to start with docker:
